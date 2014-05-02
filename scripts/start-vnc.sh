@@ -4,7 +4,8 @@
 # Script by mweber at http://www.qxs.ch/2011/01/07/skype-instant-messages-from-zabbix/
 ##
 
-DAEMON_USER=skype
+DAEMON_USER=notificator
+DAEMON_ID=$(id -u)
 XSERVERNUM=1
 
 if [[ "$USER" != "$DAEMON_USER" ]]; then
@@ -21,7 +22,7 @@ start() {
     SERVICES='xvfb fluxbox skype' "$dnb/start-server.sh" status
     if [[ "$?" == '0' ]]; then
         echo "Starting x11vnc"
-        if [[ `ps aux | grep "$DAEMON_USER" | grep "x11vnc -display :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
+        if [[ `ps aux | grep "$DAEMON_USER\|$DAEMON_ID" | grep "x11vnc -display :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
 
             install -d ~/.x11vnc
             if [[ ! -e ~/.x11vnc/passwd ]]
@@ -46,7 +47,7 @@ start() {
 
 
 status() {
-    if [[ `ps aux | grep "$DAEMON_USER" | grep "x11vnc -display :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
+    if [[ `ps aux | grep "$DAEMON_USER\|$DAEMON_ID" | grep "x11vnc -display :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
         echo "x11vnc isn't running"
         exit 1
     else
@@ -56,7 +57,7 @@ status() {
 }
 
 stop() {
-    if [[ `ps aux | grep "$DAEMON_USER" | grep "x11vnc -display :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
+    if [[ `ps aux | grep "$DAEMON_USER\|$DAEMON_ID" | grep "x11vnc -display :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
         echo "x11vnc isn't running"
     else
         echo "killing x11vnc"

@@ -13,7 +13,8 @@
 #
 #
 
-DAEMON_USER=skype
+DAEMON_USER=notificator
+DAEMON_ID=$(id -u)
 XSERVERNUM=1
 
 export DISPLAY=:$XSERVERNUM
@@ -21,7 +22,8 @@ export DISPLAY=:$XSERVERNUM
 dnb=`dirname "$0"`
 
 #: Sevabot script location
-seva=`dirname "$0"`/../venv/bin/sevabot
+#seva=`dirname "$0"`/../venv/bin/sevabot
+seva=/usr/local/bin/sevabot
 
 # Which services we are
 services="$SERVICES"
@@ -40,7 +42,7 @@ start() {
 
     if [[ $services == *xvfb* ]]
     then
-        if [[ `ps aux | grep "$DAEMON_USER" | grep "Xvfb :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
+        if [[ `ps aux | grep "$DAEMON_USER\|$DAEMON_ID" | grep "Xvfb :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
                 echo "starting Xvfb"
                 Xvfb :$XSERVERNUM -screen 0 800x600x16 &
         else
@@ -50,7 +52,7 @@ start() {
 
     if [[ $services == *fluxbox* ]]
     then
-        if [[ `ps aux | grep "$DAEMON_USER" | grep "fluxbox" | grep -v grep | wc -l` == '0' ]]; then
+        if [[ `ps aux | grep "$DAEMON_USER\|$DAEMON_ID" | grep "fluxbox" | grep -v grep | wc -l` == '0' ]]; then
                 echo "starting fluxbox"
                 sleep 3
                 fluxbox &
@@ -73,7 +75,7 @@ start() {
 
     if [[ $services == *sevabot* ]]
     then
-        pgrep -f venv/bin/sevabot > /dev/null
+        pgrep -f /usr/local/bin/sevabot > /dev/null
         if [[ $? == '0' ]] ; then
             echo "Sevabot already running"
         else
@@ -100,7 +102,7 @@ stop() {
 
     if [[ $services == *fluxbox* ]]
     then
-        if [[ `ps aux | grep "$DAEMON_USER" | grep "fluxbox" | grep -v grep | wc -l` == '0' ]]; then
+        if [[ `ps aux | grep "$DAEMON_USER\|$DAEMON_ID" | grep "fluxbox" | grep -v grep | wc -l` == '0' ]]; then
             echo "fluxbox is NOT running"
         else
             echo "Killing fluxbox"
@@ -124,7 +126,7 @@ stop() {
 
     if [[ $services == *sevabot* ]]
     then
-        pgrep -f venv/bin/sevabot > /dev/null
+        pgrep -f /usr/local/bin/sevabot > /dev/null
         if [[ $? != '0' ]] ; then
             echo "Sevabot not running"
         else
@@ -140,7 +142,7 @@ status() {
 
     if [[ $services == *xvfb* ]]
     then
-        if [[ `ps aux | grep "$DAEMON_USER" | grep "Xvfb :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
+        if [[ `ps aux | grep "$DAEMON_USER\|$DAEMON_ID" | grep "Xvfb :$XSERVERNUM" | grep -v grep | wc -l` == '0' ]]; then
             echo "Xvfb is NOT running"
         else
             echo "Xvfb is running"
@@ -152,7 +154,7 @@ status() {
 
     if [[ $services == *fluxbox* ]]
     then
-        if [[ `ps aux | grep "$DAEMON_USER" | grep "fluxbox" | grep -v grep | wc -l` == '0' ]]; then
+        if [[ `ps aux | grep "$DAEMON_USER\|$DAEMON_ID" | grep "fluxbox" | grep -v grep | wc -l` == '0' ]]; then
             echo "fluxbox is NOT running"
         else
             echo "fluxbox is running"
@@ -177,7 +179,7 @@ status() {
 
     if [[ $services == *sevabot* ]]
     then
-        pgrep -f venv/bin/sevabot > /dev/null
+        pgrep -f /usr/local/bin/sevabot > /dev/null
         if [[ $? == '0' ]] ; then
             echo "Sevabot running"
             ((i--))
