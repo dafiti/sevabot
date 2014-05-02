@@ -25,8 +25,8 @@ SSH into your server as a root or do ``sudo -i``.
 Then install necessary software::
 
     apt-get update
-    apt-get install -y xvfb fluxbox x11vnc dbus libasound2 libqt4-dbus libqt4-network libqtcore4 libqtgui4 libxss1 libpython2.7 libqt4-xml libaudio2 libmng1 fontconfig liblcms1 lib32stdc++6 lib32asound2 ia32-libs libc6-i386 lib32gcc1 nano
-    wget http://www.skype.com/go/getskype-linux-beta-ubuntu-64 -O skype-linux-beta.deb
+    apt-get install -y xvfb fluxbox x11vnc dbus libasound2 libqt4-dbus libqt4-network libqtcore4 libqtgui4 libxss1 libpython2.7 libqt4-xml libaudio2 libmng1 fontconfig liblcms1 lib32stdc++6 lib32asound2 ia32-libs libc6-i386 lib32gcc1 nano python-virtualenv
+    wget http://www.skype.com/go/getskype-linux-beta-ubuntu-64 -O skype-linux-beta.deb 
     # if there are other unresolved dependencies install missing packages using apt-get install and then install the skype deb package again
     dpkg -i skype-linux-beta.deb
 
@@ -52,7 +52,7 @@ Under ``sudo -i``::
     openssl rand -base64 32  # Copy this output, write down and use in the input of the following command
     adduser skype # We must run Skype under non-root user
 
-Exit from the current (root) terminal sessoin.
+Exit from the current (root) terminal session.
 
 Login to your server::
 
@@ -80,7 +80,7 @@ Start VNC server::
     # Delete file ~/.x11vnc/password to reset the password
     ~/sevabot/scripts/start-vnc.sh start
 
-On your **local computer** start the VNC viewing softare and connect the server::
+On your **local computer** start the VNC viewing software and connect the server::
 
     vncviewer yourserver.example.com  # Password as you give it above
 
@@ -101,7 +101,7 @@ Now, in your **local** Skype, invite the bot as your friend. Then accept the fri
     It is important to add one Skype buddy for your Sevabot instance in this point,
     so don't forget to do this step.
 
-Nowm, in Sevabot go to Skype's settings and set the following
+Now, in Sevabot go to Skype's settings and set the following:
 
 - No chat history
 
@@ -316,8 +316,7 @@ Install Sevabot::
 
     git clone git://github.com/opensourcehacker/sevabot.git
     cd sevabot
-    curl -L -o virtualenv.py https://raw.github.com/pypa/virtualenv/master/virtualenv.py
-    python virtualenv.py venv
+    virtualenv venv  # Assume we use Python 2.7 virtualenv installed from Ubuntu 12.04 package manager
     . venv/bin/activate
     python setup.py develop
 

@@ -19,7 +19,8 @@ XSERVERNUM=1
 
 export DISPLAY=:$XSERVERNUM
 
-dnb=`dirname "$0"`
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR/../"
 
 #: Sevabot script location
 #seva=`dirname "$0"`/../venv/bin/sevabot
@@ -67,7 +68,7 @@ start() {
         if [[ $? != '0' ]]; then
             sleep 3
             #  http://devforum.skype.com/t5/Audio-Video/bt-audio-service-open-connect-failed-Connection-refused-111/td-p/303
-            skype > /dev/null 2&>1 &
+            skype > /dev/null 2>&1 &
         else
             echo "skype already running"
         fi
