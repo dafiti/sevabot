@@ -14,7 +14,11 @@ from datetime import datetime
 import os
 import logging
 import pickle
-from collections import OrderedDict
+try:
+    from collections import OrderedDict
+except ImportError:
+    # python 2.6 or earlier, use backport
+    from ordereddict import OrderedDict
 
 from sevabot.bot.stateful import StatefulSkypeHandler
 from sevabot.utils import ensure_unicode, get_chat_id
