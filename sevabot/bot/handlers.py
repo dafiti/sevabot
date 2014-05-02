@@ -20,10 +20,11 @@ class CommandHandler:
     """A handler for processing built-in commands and delegating messages to reloadable modules.
     """
 
-    def __init__(self, sevabot):
+    def __init__(self, sevabot, acl = None):
         self.sevabot = sevabot
         self.calls = {}
         self.cache_builtins()
+        self.acl = acl
 
     def cache_builtins(self):
         """Scan all built-in commands defined in this handler.
@@ -55,6 +56,7 @@ class CommandHandler:
         if status == "READ":
             return
 
+
         # Check all stateful handlers
         for handler in modules.get_message_handlers():
             processed = handler(msg, status)
@@ -84,6 +86,14 @@ class CommandHandler:
 
         # Beyond this point we process script commands only
         if not command_name.startswith('!'):
+            return
+
+        if self.acl and not self.acl.is_allowed(msg.Sender.Handle):
+            msg.Chat.SendMessage(
+                'You are in non of the main group chats, you cannot give me commands :p\n' +
+                'go and find another BOT [or ask for inclusion to the main chats] (emo)'
+            )
+            logger.debug(msg.Sender.Handle)
             return
 
         command_name = command_name[1:]

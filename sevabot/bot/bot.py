@@ -5,7 +5,11 @@ import sys
 import logging
 import hashlib
 import time
-from collections import OrderedDict
+try:
+    from collections import OrderedDict
+except ImportError:
+    # python 2.6 or earlier, use backport
+    from ordereddict import OrderedDict
 from inspect import getmembers, isclass
 
 import Skype4Py
@@ -44,7 +48,25 @@ class Sevabot:
         self.cacheChats()
 
         # XXX: Might need refactoring logic here how master handler is registered
-        self.handler = handlers.CommandHandler(self)
+
+        class Acl:
+            def __init__(self, chats, chat_ids = []):
+                self.acl = []
+                for chat_id in chat_ids:
+                    if chat_id in chats:
+                        self.add_members_from(chats[chat_id]) 
+
+            def add_members_from(self, chat):
+                for member in chat.Members:
+                    if member.Handle not in self.acl:
+                        self.acl.append(member.Handle)
+
+            def is_allowed(self, handle):
+                return handle in self.acl
+
+        # BRA Servers
+        acl = Acl(self.chats, ['05676bf242b93f9fe01e572ad4b419df', 'ea5cd9fd0d02ac1fa5209177114783b4'])
+        self.handler = handlers.CommandHandler(self, acl)
 
     def getSkype(self):
         """ Expose Skype to stateful modules.
