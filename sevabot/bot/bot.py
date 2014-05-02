@@ -5,6 +5,7 @@ import sys
 import logging
 import hashlib
 import time
+
 try:
     from collections import OrderedDict
 except ImportError:
@@ -16,6 +17,7 @@ import Skype4Py
 
 from sevabot.bot import handlers
 from sevabot.utils import get_chat_id
+import settings
 
 
 logger = logging.getLogger("sevabot")
@@ -64,8 +66,7 @@ class Sevabot:
             def is_allowed(self, handle):
                 return handle in self.acl
 
-        # BRA Servers
-        acl = Acl(self.chats, ['05676bf242b93f9fe01e572ad4b419df', 'ea5cd9fd0d02ac1fa5209177114783b4'])
+        acl = Acl(self.chats, settings.ACL_CHATS)
         self.handler = handlers.CommandHandler(self, acl)
 
     def getSkype(self):

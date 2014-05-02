@@ -36,3 +36,6 @@ LOG_ROTATE_MAX_SIZE = 1024 * 1024
 
 #: Log all HTTP requests for debugging purposes
 DEBUG_HTTP = False
+
+# list of [group] chat hashs with users who are allowed to send commands
+ACL_CHATS = []
