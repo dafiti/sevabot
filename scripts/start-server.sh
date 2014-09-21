@@ -13,12 +13,8 @@
 #
 #
 
-<<<<<<< HEAD
 DAEMON_USER=notificator
 DAEMON_ID=$(id -u)
-=======
-DAEMON_USER=ubuntu
->>>>>>> some_fork/custom
 XSERVERNUM=1
 
 export DISPLAY=:$XSERVERNUM
