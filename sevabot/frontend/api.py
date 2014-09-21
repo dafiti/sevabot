@@ -194,7 +194,7 @@ class JenkinsNotifier(SendMessage):
             return "Jenkins bad notification: Could not read HTTP POST data"
         # Filter out completed status, lots of unneeded noise
         if payload['build']['phase'] != 'COMPLETED':
-            if payload['build']['status'] == 'SUCCESS':
+            if payload['build'].get('status') == 'SUCCESS':
                 msg = u'Project: %s build #%d %s Status: %s - (sun) - %s\n' % (payload['name'], payload['build']['number'], payload['build']['phase'], payload['build']['status'], payload['build']['full_url'])
             elif payload['build']['status'] == 'FAILURE':
                 msg = u'Project: %s build #%d %s Status: %s - (rain) - %s\n' % (payload['name'], payload['build']['number'], payload['build']['phase'], payload['build']['status'], payload['build']['full_url'])
@@ -213,6 +213,24 @@ class TeamcityWebHook(SendMessage):
         message = '%s\n%s' % (build.get('message'), build.get('buildStatusUrl'))
 
         return message
+
+
+class JenkinsWebHook(View):
+
+    def __init__(self, sevabot, shared_secret):
+        self.sevabot = sevabot
+        self.shared_secret = shared_secret
+
+    def dispatch_request(self):
+        from sevabot.bot import modules
+        for module in modules._modules.values():
+            try:
+                if module.handler.hook(request):
+                    return 'OK'
+            except AttributeError as e:
+                pass
+
+        return 'NOK'
 
 
 def configure(sevabot, settings, server):
@@ -244,4 +262,7 @@ def configure(sevabot, settings, server):
     server.add_url_rule('/jenkins-notifier/<string:chat_id>/<string:shared_secret>/', view_func=JenkinsNotifier.as_view(str('send_message_jenkins'), sevabot=sevabot, shared_secret=settings.SHARED_SECRET))
 
     server.add_url_rule('/teamcity/<string:chat_id>/<string:shared_secret>/', view_func=TeamcityWebHook.as_view(str('send_message_teamcity'), sevabot=sevabot, shared_secret=settings.SHARED_SECRET))
+
+    server.add_url_rule('/jenkins-webhook/', view_func=JenkinsWebHook.as_view(str('jenkins_webhook'), sevabot=sevabot, shared_secret=settings.SHARED_SECRET))
+
 
