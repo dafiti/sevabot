@@ -124,12 +124,5 @@ class CommandHandler:
     def builtin_reload(self, args, msg, status):
         """Reload command modules.
         """
-
-        from sevabot.frontend.main import get_settings
-
-        if msg.FromHandle not in get_settings().ADMINS:
-            logger.warning("Access denied for %s" % (msg.FromHandle))
-            return
-
         commands = modules.load_modules(self.sevabot)
         msg.Chat.SendMessage('Available commands: %s' % ', '.join(commands))

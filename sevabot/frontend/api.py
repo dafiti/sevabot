@@ -215,24 +215,6 @@ class TeamcityWebHook(SendMessage):
         return message
 
 
-class JenkinsWebHook(View):
-
-    def __init__(self, sevabot, shared_secret):
-        self.sevabot = sevabot
-        self.shared_secret = shared_secret
-
-    def dispatch_request(self):
-        from sevabot.bot import modules
-        for module in modules._modules.values():
-            try:
-                if module.handler.hook(request):
-                    return 'OK'
-            except AttributeError as e:
-                pass
-
-        return 'NOK'
-
-
 def configure(sevabot, settings, server):
     """
     Install Flask webhook routing
@@ -262,7 +244,4 @@ def configure(sevabot, settings, server):
     server.add_url_rule('/jenkins-notifier/<string:chat_id>/<string:shared_secret>/', view_func=JenkinsNotifier.as_view(str('send_message_jenkins'), sevabot=sevabot, shared_secret=settings.SHARED_SECRET))
 
     server.add_url_rule('/teamcity/<string:chat_id>/<string:shared_secret>/', view_func=TeamcityWebHook.as_view(str('send_message_teamcity'), sevabot=sevabot, shared_secret=settings.SHARED_SECRET))
-
-    server.add_url_rule('/jenkins-webhook/', view_func=JenkinsWebHook.as_view(str('jenkins_webhook'), sevabot=sevabot, shared_secret=settings.SHARED_SECRET))
-
 
