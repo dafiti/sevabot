@@ -37,7 +37,7 @@ class UNIXScriptModule:
     @staticmethod
     def is_valid(path):
         """ Is this a module we are looking for """
-        return os.access(path, os.X_OK)
+        return os.access(path, os.X_OK) and not os.path.isdir(path)
 
     def run(self, msg, args, callback):
         """

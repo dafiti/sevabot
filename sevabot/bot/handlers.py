@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, unicode_literals
 import re
 import logging
 import shlex
+import random
 from inspect import getmembers, ismethod
 
 from sevabot.bot import modules
@@ -112,7 +113,13 @@ class CommandHandler:
 
             script_module.run(msg, command_args, callback)
         else:
-            msg.Chat.SendMessage("Don't know about command: !" + command_name)
+            cmds = []
+            [cmds.append(i) for i in modules._modules.keys() if i.startswith(command_name[0])]
+            if not cmds:
+                cmds.append(random.choice(modules._modules.keys()))
+            message = "%s, I don't know about command: !%s, maybe you mean another one: %s" % (
+                msg.Sender.Handle, command_name, cmds)
+            msg.Chat.SendMessage(message)
 
     def builtin_reload(self, args, msg, status):
         """Reload command modules.
